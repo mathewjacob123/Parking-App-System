@@ -1,7 +1,55 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class UserRegistrationPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
+
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneNumberController = TextEditingController();
+  final TextEditingController _vehicleTypeController = TextEditingController();
+  final TextEditingController _vehicleNumberController = TextEditingController();
+
+  Future<void> _registerUser(BuildContext context) async {
+    const String url = 'http://192.168.0.111:8080/register'; // Replace with your backend endpoint
+
+    final userData = {
+      "username": _usernameController.text,
+      "password": _passwordController.text,
+      "email": _emailController.text,
+      "phoneNumber": _phoneNumberController.text,
+      "vehicleType": _vehicleTypeController.text,
+      "vehicleNumber": _vehicleNumberController.text,
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {"Content-Type": "application/json"},
+        body: json.encode(userData),
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        print("User registered: $responseData");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("User registered successfully!")),
+        );
+      } else {
+        print("Failed to register user: ${response.statusCode}");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Failed to register user.")),
+        );
+      }
+    } catch (e) {
+      print("Error: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("An error occurred.")),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,6 +62,7 @@ class UserRegistrationPage extends StatelessWidget {
           child: ListView(
             children: [
               TextFormField(
+                controller: _usernameController,
                 decoration: InputDecoration(labelText: "Username"),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -23,6 +72,7 @@ class UserRegistrationPage extends StatelessWidget {
                 },
               ),
               TextFormField(
+                controller: _passwordController,
                 decoration: InputDecoration(labelText: "Password"),
                 obscureText: true,
                 validator: (value) {
@@ -33,6 +83,7 @@ class UserRegistrationPage extends StatelessWidget {
                 },
               ),
               TextFormField(
+                controller: _emailController,
                 decoration: InputDecoration(labelText: "Email"),
                 keyboardType: TextInputType.emailAddress,
                 validator: (value) {
@@ -43,6 +94,7 @@ class UserRegistrationPage extends StatelessWidget {
                 },
               ),
               TextFormField(
+                controller: _phoneNumberController,
                 decoration: InputDecoration(labelText: "Phone Number"),
                 keyboardType: TextInputType.phone,
                 validator: (value) {
@@ -53,16 +105,18 @@ class UserRegistrationPage extends StatelessWidget {
                 },
               ),
               TextFormField(
+                controller: _vehicleTypeController,
                 decoration: InputDecoration(labelText: "Vehicle Type"),
               ),
               TextFormField(
+                controller: _vehicleNumberController,
                 decoration: InputDecoration(labelText: "Vehicle Number"),
               ),
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState?.validate() == true) {
-                    // Submit the form data
+                    _registerUser(context);
                   }
                 },
                 child: Text("Register"),

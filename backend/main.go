@@ -1,5 +1,4 @@
 package main
-
 import (
     "encoding/json"
     "fmt"
@@ -24,7 +23,7 @@ func main() {
     http.HandleFunc("/register", registerUser)
 
     fmt.Println("Server is running on port 8080")
-    http.ListenAndServe(":8080", nil)
+    http.ListenAndServe("0.0.0.0:8080", nil)
 }
 
 func getUsers(w http.ResponseWriter, r *http.Request) {
