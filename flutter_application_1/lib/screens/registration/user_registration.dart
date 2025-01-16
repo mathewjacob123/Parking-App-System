@@ -19,9 +19,9 @@ class UserRegistrationPage extends StatelessWidget {
       "username": _usernameController.text,
       "password": _passwordController.text,
       "email": _emailController.text,
-      "phoneNumber": _phoneNumberController.text,
-      "vehicleType": _vehicleTypeController.text,
-      "vehicleNumber": _vehicleNumberController.text,
+      "phone": _phoneNumberController.text,
+      "vehicle_type": _vehicleTypeController.text,
+      "vehicle_number": _vehicleNumberController.text,
     };
 
     try {
